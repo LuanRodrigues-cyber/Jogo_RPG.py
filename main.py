@@ -1,8 +1,10 @@
 import jogador
 import missoes
+from jogabilidade import Explorar_Floresta
 
 nome = input("Digite o nome do jogador: ")
 meu_player = jogador.Player(nome)
+floresta = Explorar_Floresta(meu_player)
 
 print("Bem-vindo, {}! Boa sorte em sua aventura!".format(meu_player.nome))
 
@@ -10,7 +12,11 @@ def verificar_nivel():
      while meu_player.experiencia >= 100:
         meu_player.nivel += 1
         meu_player.experiencia -= 100
+        print("\n----------------------")
         print("Parabéns! Você subiu para o nível {}!".format(meu_player.nivel))
+
+def verificar_estamina():
+    meu_player.estamina <= 0
 
 historico_missoes = [] 
 def missao_concluida(decisao_missao):
@@ -44,10 +50,12 @@ def menu_jogo():
             print ("EXPERIENCIA: {}".format(meu_player.experiencia))
             print ("MOEDAS: {}".format(meu_player.moedas))
             print ("VIDA: {}".format(meu_player.vidas))
+            print ("ESTAMINA: {}".format(meu_player.estamina))
             print ("MISSOES CONCLUIDAS: {}".format(meu_player.missoes_concluidas))
             decisao = input("Deseja voltar ao menu? ").lower()
 
         elif opcao == "2":
+
             print ("1 - EXPLORAR FLORESTA")
             print ("2 - DERROTAR UM MONSTRO")
             print ("3 - ENCONTRAR UM TESOURO")
@@ -55,45 +63,79 @@ def menu_jogo():
             decisao_missao = input("Escolha uma missão: ")
 
             if decisao_missao == "1":
-                print("Você escolheu explorar a floresta!")
-                print("Você ganhou {} pontos de experiência e {} moedas!".format(missoes.explorar_floresta_xp, missoes.explorar_floresta_moedas))
-                meu_player.experiencia = meu_player.experiencia + missoes.explorar_floresta_xp
-                meu_player.moedas = meu_player.moedas + missoes.explorar_floresta_moedas
 
-                verificar_nivel()
-                missao_concluida(decisao_missao)
-                decisao = input("Deseja voltar ao menu? ").lower()
+                verificar_estamina()
+                if meu_player.estamina < 20:
+                    print("\n----------------------")
+                    print("Voce nao tem estamina suficiente para realizar essa missao! Descanse para se recuperar.") 
+                else:
+                    meu_player.estamina -= 20
+
+                    print("\n----------------------")
+                    print("Você escolheu explorar a floresta!")
+                    floresta.floresta()
+
+                    missao_concluida(decisao_missao)
+                    decisao = input("Deseja voltar ao menu? ").lower()
 
             elif decisao_missao == "2":
-                print("Você escolheu derrotar um monstro!")
-                print("Você ganhou {} pontos de experiência e {} moedas!".format(missoes.derrotar_monstro_xp, missoes.derrotar_monstro_moedas))
-                meu_player.experiencia = meu_player.experiencia + missoes.derrotar_monstro_xp
-                meu_player.moedas = meu_player.moedas + missoes.derrotar_monstro_moedas
 
-                verificar_nivel()
-                missao_concluida(decisao_missao)
-                decisao = input("Deseja voltar ao menu? ").lower()
+                verificar_estamina()
+                if meu_player.estamina < 20:
+                    print("Voce nao tem estamina suficiente para realizar essa missao!") 
+                else:
+                    meu_player.estamina -= 20
+
+                    print("Você escolheu derrotar um monstro!")
+                    print("Você ganhou {} pontos de experiência e {} moedas!".format(missoes.derrotar_monstro_xp, missoes.derrotar_monstro_moedas))
+                    meu_player.experiencia = meu_player.experiencia + missoes.derrotar_monstro_xp
+                    meu_player.moedas = meu_player.moedas + missoes.derrotar_monstro_moedas
+
+                    verificar_nivel()
+                    missao_concluida(decisao_missao)
+                    decisao = input("Deseja voltar ao menu? ").lower()
 
             elif decisao_missao == "3":
-                print("Você escolheu encontrar um tesouro!")
-                print("Você ganhou {} pontos de experiência e {} moedas!".format(missoes.encontrar_tesouro_xp, missoes.encontrar_tesouro_moedas))
-                meu_player.experiencia = meu_player.experiencia + missoes.encontrar_tesouro_xp
-                meu_player.moedas = meu_player.moedas + missoes.encontrar_tesouro_moedas
 
-                verificar_nivel()
-                missao_concluida(decisao_missao)
-                decisao = input("Deseja voltar ao menu? ").lower()
+                verificar_estamina()
+                if meu_player.estamina < 20:
+                    print("Voce nao tem estamina suficiente para realizar essa missao!") 
+                else:
+                    meu_player.estamina -= 20
+
+                    print("Você escolheu encontrar um tesouro!")
+                    print("Você ganhou {} pontos de experiência e {} moedas!".format(missoes.encontrar_tesouro_xp, missoes.encontrar_tesouro_moedas))
+                    meu_player.experiencia = meu_player.experiencia + missoes.encontrar_tesouro_xp
+                    meu_player.moedas = meu_player.moedas + missoes.encontrar_tesouro_moedas
+
+                    verificar_nivel()
+                    missao_concluida(decisao_missao)
+                    decisao = input("Deseja voltar ao menu? ").lower()
 
         elif opcao == "3":
                     print ("\nHISTORICO DE MISSOES")
 
                     if len(historico_missoes) == 0:
                         print("Nenhuma missão concluída ainda.")
-                    else:   
-                        for missao in historico_missoes:
-                            print("A missão concluída foi: {}".format(missao))
-                            print("Total de missões concluídas: {}".format(meu_player.missoes_concluidas))
-                    decisao = input("Deseja voltar ao menu? ").lower() 
+                    else:
+                        print ("\nAs missoes concluidadas foram: ")   
+                        for i, missao in enumerate(historico_missoes, start=1):
+                            print(" {} - {}".format(i, missao))
+
+                        print("Total de missões concluídas: {}".format(meu_player.missoes_concluidas))
+                    decisao = input("Deseja voltar ao menu? ").lower()
+
+        elif opcao == "4":
+
+            print("Você escolheu descansar!")
+            meu_player.estamina += 20
+            if meu_player.estamina > 100:
+                meu_player.estamina = 100
+
+            meu_player.vidas += 1
+            if meu_player.vidas > 5:
+                meu_player.vidas = 5
+            decisao = input("Deseja voltar ao menu? ").lower()
 
         elif opcao == "5":
             decisao = "nao"
