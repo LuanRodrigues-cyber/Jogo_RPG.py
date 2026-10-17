@@ -1,10 +1,12 @@
 import jogador
 import missoes
-from jogabilidade import Explorar_Floresta
+from jogabilidade import Explorar_Floresta, Encontrar_Tesouro, Derrotar_Monstro
 
 nome = input("Digite o nome do jogador: ")
 meu_player = jogador.Player(nome)
 floresta = Explorar_Floresta(meu_player)
+tesouro = Encontrar_Tesouro(meu_player)
+monstro = Derrotar_Monstro(meu_player)
 
 print("Bem-vindo, {}! Boa sorte em sua aventura!".format(meu_player.nome))
 
@@ -85,14 +87,11 @@ def menu_jogo():
                     print("Voce nao tem estamina suficiente para realizar essa missao!") 
                 else:
                     meu_player.estamina -= 20
+                    resultado = monstro.combate()
 
-                    print("Você escolheu derrotar um monstro!")
-                    print("Você ganhou {} pontos de experiência e {} moedas!".format(missoes.derrotar_monstro_xp, missoes.derrotar_monstro_moedas))
-                    meu_player.experiencia = meu_player.experiencia + missoes.derrotar_monstro_xp
-                    meu_player.moedas = meu_player.moedas + missoes.derrotar_monstro_moedas
-
-                    verificar_nivel()
-                    missao_concluida(decisao_missao)
+                    if resultado:
+                        verificar_nivel()
+                        missao_concluida(decisao_missao)
                     decisao = input("Deseja voltar ao menu? ").lower()
 
             elif decisao_missao == "3":
@@ -102,11 +101,7 @@ def menu_jogo():
                     print("Voce nao tem estamina suficiente para realizar essa missao!") 
                 else:
                     meu_player.estamina -= 20
-
-                    print("Você escolheu encontrar um tesouro!")
-                    print("Você ganhou {} pontos de experiência e {} moedas!".format(missoes.encontrar_tesouro_xp, missoes.encontrar_tesouro_moedas))
-                    meu_player.experiencia = meu_player.experiencia + missoes.encontrar_tesouro_xp
-                    meu_player.moedas = meu_player.moedas + missoes.encontrar_tesouro_moedas
+                    tesouro.tesouro()
 
                     verificar_nivel()
                     missao_concluida(decisao_missao)
